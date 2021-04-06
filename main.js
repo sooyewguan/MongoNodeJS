@@ -1,30 +1,36 @@
-const {MongoClient} = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 
-async function main(){
+async function main() {
 	/**
 	 * Connection URI. Update <username>, <password>, and <your-cluster-url> to reflect your cluster.
 	 * See https://docs.mongodb.com/ecosystem/drivers/node/ for more details
 	 */
 	const uri = "mongodb+srv://m001-student:p4ssw0rd@sandbox.epk5x.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-
-
 	const client = new MongoClient(uri);
 
 	try {
-		 // Connect to the MongoDB cluster
-		 await client.connect();
+		// Connect to the MongoDB cluster
+		await client.connect(); 	// asynchronous process
 
-		 // Make the appropriate DB calls
-		 await  listDatabases(client);
+		const database = client.db("chapter4");
+		const collection = database.collection("sample");
 
-	} catch (e) {
-		 console.error(e);
+		const res = await collection.deleteOne(
+			{
+				_id: ""
+			}
+		);
+
+		console.log(res)
+
+	} catch (e) {		// exception
+		console.error(e);
 	} finally {
-		 await client.close();
+		await client.close();
 	}
 }
 
-async function listDatabases(client){
+async function listDatabases(client) {
 	databasesList = await client.db().admin().listDatabases();
 
 	console.log("Databases:");
